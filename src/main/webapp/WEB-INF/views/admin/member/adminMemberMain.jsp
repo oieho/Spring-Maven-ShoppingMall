@@ -11,31 +11,61 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <script>
-function search_member(search_period){	
-	temp=calcPeriod(search_period);
-	var date=temp.split(",");
-	beginDate=date[0];
-	endDate=date[1];
-	//alert("beginDate:"+beginDate+",endDate:"+endDate);
-	//return ;
-	
-	var formObj=document.createElement("form");
-    
-	var formObj=document.createElement("form");
-	var i_beginDate = document.createElement("input"); 
-	var i_endDate = document.createElement("input");
-    
-	i_beginDate.name="beginDate";
-	i_beginDate.value=beginDate;
-	i_endDate.name="endDate";
-	i_endDate.value=endDate;
-	
-    formObj.appendChild(i_beginDate);
-    formObj.appendChild(i_endDate);
-    document.body.appendChild(formObj); 
-    formObj.method="get";
-    formObj.action="/bookshop01/admin/member/adminMemberMain.do";
-    formObj.submit();
+jQuery.fn.serializeObject = function() {
+    var obj = null;
+    try {
+        if (this[0].tagName && this[0].tagName.toUpperCase() == "FORM") {
+            var arr = this.serializeArray();
+            if (arr) {
+                obj = {};
+                jQuery.each(arr, function() {
+                    obj[this.name] = this.value;
+                });
+            }//if ( arr ) {
+        }
+    } catch (e) {
+        alert(e.message);
+    } finally {
+    }
+ 
+    return obj;
+};
+function search_member(search_period){
+		temp=calcPeriod(search_period);
+		var date=temp.split(",");
+		beginDate=date[0];
+		endDate=date[1];
+		var formObj=document.createElement("form");
+		var i_beginDate = document.createElement("input"); 
+		var i_endDate = document.createElement("input");
+		i_beginDate.name="beginDate";
+		i_beginDate.value=beginDate;
+		i_endDate.name="endDate";
+		i_endDate.value=endDate;
+	    formObj.appendChild(i_beginDate);
+	    formObj.appendChild(i_endDate);
+	$.ajax({
+	    type: "post",
+	    url: "/bookshop01/admin/member/adminMemberMain2.do",
+	    data: {beginDate:beginDate,endDate:endDate},
+	    success: function (data, textStatus) {
+	    	console.dir(data);
+	    	for (i=0; i<${fn:length(member_list)};i++)
+	    		{
+	    		$("#trpos").remove();
+	    		}
+	    	for (i=0; i<data["member_list"].length; i++){
+	    		if(data["member_list"][i]["del_yn"] == "Y"){
+	    			$("#addTr").after("<tr id='trpos'><td width=10%><a href='${pageContext.request.contextPath}/admin/member/memberDetail.do?member_id="+data["member_list"][i]["member_id"]+"'><strong>"+data["member_list"][i]["member_id"]+"</strong></a></td><td width=10%><strong>"+data["member_list"][i]["member_name"]+"</strong><br></td><td width=10% ><strong>"+data["member_list"][i]["hp1"]+"-"+data["member_list"][i]["hp2"]+"-"+data["member_list"][i]["hp3"]+"</strong><br></td><td width=50%><strong>"+data["member_list"][i]["roadAddress"]+"</strong><br><strong>"+data["member_list"][i]["jibunAddress"]+"</strong><br><strong>"+data["member_list"][i]["namujiAddress"]+"</strong><br></td><td width=10%><strong>"+data["member_list"][i]["joinDate"]+"</strong><br></td><td width=10%><strong>탈퇴<br></td></tr>");
+	    		} else{
+	    			$("#addTr").after("<tr id='trpos'><td width=10%><a href='${pageContext.request.contextPath}/admin/member/memberDetail.do?member_id="+data["member_list"][i]["member_id"]+"'><strong>"+data["member_list"][i]["member_id"]+"</strong></a></td><td width=10%><strong>"+data["member_list"][i]["member_name"]+"</strong><br></td><td width=10% ><strong>"+data["member_list"][i]["hp1"]+"-"+data["member_list"][i]["hp2"]+"-"+data["member_list"][i]["hp3"]+"</strong><br></td><td width=50%><strong>"+data["member_list"][i]["roadAddress"]+"</strong><br><strong>"+data["member_list"][i]["jibunAddress"]+"</strong><br><strong>"+data["member_list"][i]["namujiAddress"]+"</strong><br></td><td width=10%><strong>"+data["member_list"][i]["joinDate"]+"</strong><br></td><td width=10%><strong>활동중<br></td></tr>");
+	    		}
+	    	}
+	    	},
+	    error: function(data){
+	    	alert("Error!");
+	    }
+	    })
 }
 
 
@@ -221,6 +251,7 @@ function fn_detail_search(){
 </script>
 </head>
 <body>
+
 	<H3>회원 조회</H3>
 	<form name="frm_delivery_list" >	
 		<table cellpadding="10" cellspacing="10"  >
@@ -422,7 +453,7 @@ function fn_detail_search(){
 <div class="clear"></div>
 <table class="list_view">
 		<tbody align=center >
-			<tr align=center bgcolor="#ffcc00">
+			<tr id="addTr" align=center bgcolor="#ffcc00">
 				<td class="fixed" >회원아이디</td>
 				<td class="fixed">회원이름</td>
 				<td>휴대폰번호</td>
@@ -433,14 +464,14 @@ function fn_detail_search(){
    <c:choose>
      <c:when test="${empty member_list}">			
 			<tr>
-		       <td colspan=5 class="fixed">
+		       <td colspan=6 class="fixed">
 				  <strong>조회된 회원이 없습니다.</strong>
 			   </td>
 		     </tr>
 	 </c:when>
 	 <c:otherwise>
 	     <c:forEach var="item" items="${member_list}" varStatus="item_num">
-	            <tr >       
+	            <tr id="trpos">       
 					<td width=10%>
 					
 					  <a href="${pageContext.request.contextPath}/admin/member/memberDetail.do?member_id=${item.member_id}">
@@ -509,6 +540,7 @@ function fn_detail_search(){
 	</DIV>	
  </c:when>
 </c:choose>
+
 </body>
 </html>
 

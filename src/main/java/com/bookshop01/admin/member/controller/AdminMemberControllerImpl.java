@@ -1,15 +1,19 @@
 package com.bookshop01.admin.member.controller;
 
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,59 +23,98 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bookshop01.admin.member.service.AdminMemberService;
 import com.bookshop01.common.base.BaseController;
 import com.bookshop01.member.vo.MemberVO;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller("adminMemberController")
 @RequestMapping(value="/admin/member")
 public class AdminMemberControllerImpl extends BaseController  implements AdminMemberController{
 	@Autowired
 	private AdminMemberService adminMemberService;
-	
-	@RequestMapping(value="/adminMemberMain.do" ,method={RequestMethod.POST,RequestMethod.GET})
-	public ModelAndView adminGoodsMain(@RequestParam Map<String, String> dateMap,
-			                           HttpServletRequest request, HttpServletResponse response)  throws Exception{
+	@RequestMapping(value="/adminMemberMain.do")
+	public ModelAndView adminGoodsMain( HttpServletRequest request, HttpServletResponse response)  throws Exception{
 		String viewName=(String)request.getAttribute("viewName");
+		request.setCharacterEncoding("utf-8");
+		response.setContentType("text/html; charset=utf-8");
 		ModelAndView mav = new ModelAndView(viewName);
-
-		String fixedSearchPeriod = dateMap.get("fixedSearchPeriod");
-		String section = dateMap.get("section");
-		String pageNum = dateMap.get("pageNum");
-		String beginDate=null,endDate=null;
-		
-		String [] tempDate=calcSearchPeriod(fixedSearchPeriod).split(",");
-		beginDate=tempDate[0];
-		endDate=tempDate[1];
-		dateMap.put("beginDate", beginDate);
-		dateMap.put("endDate", endDate);
-		
-		
+		SimpleDateFormat format1 = new SimpleDateFormat ("yyyy-MM-dd");
+		Calendar time = Calendar.getInstance();
+		time.add(Calendar.YEAR, -5);
+		String before = format1.format(time.getTime());
+		time.add(Calendar.YEAR, +5);
+		String now = format1.format(time.getTime());
 		HashMap<String,Object> condMap=new HashMap<String,Object>();
-		if(section== null) {
-			section = "1";
+		condMap.put("beginDate",before);
+		String chapter, pageNum = null;
+		condMap.put("endDate",now);
+		chapter = request.getParameter("chapter");
+		pageNum = request.getParameter("pageNum");
+		if(chapter== null) {
+			chapter = "1";
 		}
-		condMap.put("section",section);
+		
 		if(pageNum== null) {
 			pageNum = "1";
 		}
-		condMap.put("pageNum",pageNum);
-		condMap.put("beginDate",beginDate);
-		condMap.put("endDate", endDate);
+		
+		condMap.put("chapter", chapter);
+		condMap.put("pageNum", pageNum);
+//		System.out.println(before+" / "+now);
 		ArrayList<MemberVO> member_list=adminMemberService.listMember(condMap);
-		mav.addObject("member_list", member_list);
+		mav.addObject("member_list",member_list);
 		
-		String beginDate1[]=beginDate.split("-");
-		String endDate2[]=endDate.split("-");
-		mav.addObject("beginYear",beginDate1[0]);
-		mav.addObject("beginMonth",beginDate1[1]);
-		mav.addObject("beginDay",beginDate1[2]);
-		mav.addObject("endYear",endDate2[0]);
-		mav.addObject("endMonth",endDate2[1]);
-		mav.addObject("endDay",endDate2[2]);
-		
-		mav.addObject("section", section);
-		mav.addObject("pageNum", pageNum);
-		return mav;
-		
+		return mav;	
 	}
+	
+	@RequestMapping(value="/adminMemberMain2.do",produces="application/JSON;charset=UTF-8", method={RequestMethod.POST,RequestMethod.GET})
+	public ResponseEntity<Object> adminGoodsMain2(@RequestParam Map<String,String>dateMap, HttpServletRequest request, HttpServletResponse response) throws Exception{
+		ResponseEntity<Object> resEntity = null;
+
+		try { ObjectMapper mapper = new ObjectMapper();
+				String json = mapper.writeValueAsString(dateMap);
+				String chapter = dateMap.get("chapter");
+				String pageNum = dateMap.get("pageNum");
+				String[] getDatum = json.split(",");
+				String[] begin = getDatum[0].split(":");
+				String[] end = getDatum[1].split(":");
+				String beginDate = begin[1].replaceAll("\"","").replaceAll(" ","");
+				String endDate = end[1].replaceAll("}","").replaceAll("\"","").replaceAll(" ","");
+
+				HashMap<String,Object> condMap=new HashMap<String,Object>();
+				condMap.put("beginDate",beginDate);
+				condMap.put("endDate",endDate);
+
+				if(chapter== null) {
+					chapter = "1";
+				}
+
+				condMap.put("chapter",chapter);
+				if(pageNum== null) {
+					pageNum = "1";
+				}
+				condMap.put("pageNum",pageNum);
+				String search_type = dateMap.get("search_type");
+				String search_word = dateMap.get("search_word");
+				condMap.put("search_type", search_type);
+				condMap.put("search_word", search_word);
+
+				List<MemberVO> member_list=adminMemberService.listMember(condMap);
+
+				HashMap<String, Object> condMap1=new HashMap<String, Object>();
+				condMap1.put("member_list",member_list);
+				condMap1.put("pageNum",pageNum);
+				condMap1.put("chapter",chapter);
+				condMap1.put("search_type", search_type);
+				condMap1.put("search_word", search_word);
+				resEntity = new ResponseEntity<Object>(condMap1,HttpStatus.OK);
+		} catch(Exception e) {
+			resEntity = new ResponseEntity<Object>(e.getMessage(),HttpStatus.BAD_REQUEST);
+			e.printStackTrace();
+		}
+		return resEntity;
+
+	}
+	
+	
 	@RequestMapping(value="/memberDetail.do" ,method={RequestMethod.POST,RequestMethod.GET})
 	public ModelAndView memberDetail(HttpServletRequest request, HttpServletResponse response)  throws Exception{
 		String viewName=(String)request.getAttribute("viewName");
