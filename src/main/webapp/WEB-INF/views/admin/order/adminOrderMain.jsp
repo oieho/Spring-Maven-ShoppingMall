@@ -33,27 +33,49 @@ function init(){
 </c:when>
 </c:choose>
 <script>
-function search_order_history(search_period){	
-	temp=calcPeriod(search_period);
+function search_order_history(search_period){
+	var temp=calcPeriod(search_period);
 	var date=temp.split(",");
-	beginDate=date[0];
-	endDate=date[1];
-	
-    
+	var beginDate=date[0];
+	var endDate=date[1];
+
 	var formObj=document.createElement("form");
 	var i_command = document.createElement("input");
 	var i_beginDate = document.createElement("input"); 
 	var i_endDate = document.createElement("input");
+	var i_fixedSearch_period = document.createElement("input");
     
-	i_beginDate.name="beginDate";
+	i_beginDate.name="beginDates";
 	i_beginDate.value=beginDate;
-	i_endDate.name="endDate";
+	i_endDate.name="endDates";
 	i_endDate.value=endDate;
+	i_fixedSearch_period.name="fixedSearchPeriod";
+	if(search_period == null){
+		i_fixedSearch_period.value="temp";
+		alert(i_fixedSearch_period.value);
+	} else if (search_period == 'today'){
+		i_fixedSearch_period.value="today";
+		alert(i_fixedSearch_period.value);
+	} else if(search_period== 'one_week'){
+		i_fixedSearch_period.value="one_week";
+		alert(i_fixedSearch_period.value);
+	} else if(search_period== 'two_week'){
+		i_fixedSearch_period.value="two_week";
+	} else if(search_period== 'one_month'){
+		i_fixedSearch_period.value="one_month";
+	} else if(search_period== 'two_month'){
+		i_fixedSearch_period.value="two_month";
+	} else if(search_period== 'three_month'){
+		i_fixedSearch_period.value="three_month";
+	} else if(search_period== 'four_month'){
+		i_fixedSearch_period.value="four_month";
+	}
 	
     formObj.appendChild(i_beginDate);
     formObj.appendChild(i_endDate);
+    formObj.appendChild(i_fixedSearch_period);
     document.body.appendChild(formObj); 
-    formObj.method="get";
+    formObj.method="post";
     formObj.action="${contextPath}/admin/order/adminOrderMain.do";
     formObj.submit();
 }
@@ -69,7 +91,13 @@ function  calcPeriod(search_period){
 	endYear = dt.getFullYear();
 	endMonth = dt.getMonth()+1;
 	endDay = dt.getDate();
-	if(search_period=='today'){
+	
+	if(search_period==null){
+		beginYear = dt.getFullYear();
+		dt.setMonth(endMonth-4);
+		beginMonth = dt.getMonth();
+		beginDay = dt.getDate();
+	}else if(search_period=='today'){
 		beginYear=endYear;
 		beginMonth=endMonth;
 		beginDay=endDay;
@@ -204,7 +232,7 @@ function fn_detail_order(order_id){
 	var formObj=document.createElement("form");
 	var i_order_id = document.createElement("input");
 	
-	i_order_id.name="order_id";
+	i_order_id.name="order_id2";
 	i_order_id.value=order_id;
 	
     formObj.appendChild(i_order_id);
@@ -217,7 +245,7 @@ function fn_detail_order(order_id){
 
 //상세조회 버튼 클릭 시 수행
 function fn_detail_search(){
-	var frm_delivery_list=document.frm_delivery_list;
+	frm_delivery_list=document.frm_delivery_list;
 	
 	beginYear=frm_delivery_list.beginYear.value;
 	beginMonth=frm_delivery_list.beginMonth.value;
@@ -227,48 +255,53 @@ function fn_detail_search(){
 	endDay=frm_delivery_list.endDay.value;
 	search_type=frm_delivery_list.s_search_type.value;
 	search_word=frm_delivery_list.t_search_word.value;
-
 	var formObj=document.createElement("form");
+	var i_fixedSearch_period = document.createElement("input");
 	var i_command = document.createElement("input");
 	var i_beginDate = document.createElement("input"); 
 	var i_endDate = document.createElement("input");
 	var i_search_type = document.createElement("input");
 	var i_search_word = document.createElement("input");
-    
+	
+	
 	//alert("beginYear:"+beginYear);
 	//alert("endDay:"+endDay);
 	//alert("search_type:"+search_type);
 	//alert("search_word:"+search_word);
 	
-    i_command.name="command";
-    i_beginDate.name="beginDate";
-    i_endDate.name="endDate";
+//     i_command.name="command";
+	i_fixedSearch_period.name="fixedSearchPeriod";
+    i_beginDate.name="beginDates";
+    i_endDate.name="endDates";
     i_search_type.name="search_type";
     i_search_word.name="search_word";
     
-    i_command.value="list_detail_order_goods";
+//     i_command.value=frm_delivery_list;
+//     i_command.value="list_detail_order_goods";
+	i_fixedSearch_period.value="dsearch";
 	i_beginDate.value=beginYear+"-"+beginMonth+"-"+beginDay;
     i_endDate.value=endYear+"-"+endMonth+"-"+endDay;
     i_search_type.value=search_type;
     i_search_word.value=search_word;
 	
-    formObj.appendChild(i_command);
+//     formObj.appendChild(i_command);
+
+    formObj.appendChild(i_fixedSearch_period);
     formObj.appendChild(i_beginDate);
     formObj.appendChild(i_endDate);
     formObj.appendChild(i_search_type);
     formObj.appendChild(i_search_word);
     document.body.appendChild(formObj); 
     formObj.method="post";
-    formObj.action="${contextPath}/admin/order/detailOrder.do";
+    formObj.action="${contextPath}/admin/order/adminOrderMain.do";
     formObj.submit();
     //alert("submit");
-	
 }
 </script>
 </head>
 <body>
 	<H3>주문 조회</H3>
-	<form name="frm_delivery_list" action="${contextPath }/admin/admin.do" method="post">	
+	<form name="frm_delivery_list" action="${contextPath }/admin/order/adminOrderMain.do" method="post">	
 		<table   >
 			<tbody>
 				<tr>
@@ -398,10 +431,10 @@ function fn_detail_search(){
 					 <c:forEach   var="i" begin="0" end="5">
 					      <c:choose>
 					        <c:when test="${endYear==endYear-i }">
-					          <option value="${2016-i }" selected>${2016-i  }</option>
+					          <option value="${2022-i }" selected>${2022-i  }</option>
 					        </c:when>
 					        <c:otherwise>
-					          <option value="${2016-i }">${2016-i }</option>
+					          <option value="${2022-i }">${2022-i }</option>
 					        </c:otherwise>
 					      </c:choose>
 					    </c:forEach>
@@ -453,11 +486,11 @@ function fn_detail_search(){
 						<option value="all" checked>전체</option>
 						<option value="orderer_name">주문자이름</option>
 						<option value="orderer_id">주문자아이디</option>
-						<option value="orderer_hp">주문자휴대폰번호</option>
+						<option value="orderer_shp">주문자휴대폰번호</option>
 						<option value="orderer_goods">주문상품품명</option>
 					</select>
 					<input  type="text"  size="30" name="t_search_word" disabled />  
-					<input   type="button"  value="조회" name="btn_search" onClick="fn_detail_search()" disabled  />
+					<input  type="button"  value="조회" name="btn_search" onClick="fn_detail_search()" disabled  />
 				  </td>
 				</tr>				
 			</tbody>
@@ -476,7 +509,7 @@ function fn_detail_search(){
 				<td>배송수정</td>
 			</tr>
    <c:choose>
-     <c:when test="${empty newOrderList}">			
+     <c:when test="${empty newOrderList }">			
 			<tr>
 		       <td colspan=5 class="fixed">
 				  <strong>주문한 상품이 없습니다.</strong>

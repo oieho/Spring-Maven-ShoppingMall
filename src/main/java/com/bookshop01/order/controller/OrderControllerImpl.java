@@ -41,9 +41,9 @@ public class OrderControllerImpl extends BaseController implements OrderControll
 		
 		Boolean isLogOn=(Boolean)session.getAttribute("isLogOn");
 		String action=(String)session.getAttribute("action");
-		//·Î±×ÀÎ ¿©ºÎ Ã¼Å©
-		//ÀÌÀü¿¡ ·Î±×ÀÎ »óÅÂÀÎ °æ¿ì´Â ÁÖ¹®°úÁ¤ ÁøÇà
-		//·Î±×¾Æ¿ô »óÅÂÀÎ °æ¿ì ·Î±×ÀÎ È­¸éÀ¸·Î ÀÌµ¿
+		//ï¿½Î±ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã¼Å©
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î±ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		//ï¿½Î±×¾Æ¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Î±ï¿½ï¿½ï¿½ È­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½
 		if(isLogOn==null || isLogOn==false){
 			session.setAttribute("orderInfo", _orderVO);
 			session.setAttribute("action", "/order/orderEachGoods.do");
@@ -118,6 +118,7 @@ public class OrderControllerImpl extends BaseController implements OrderControll
 		String member_id=memberVO.getMember_id();
 		String orderer_name=memberVO.getMember_name();
 		String orderer_hp = memberVO.getHp1()+"-"+memberVO.getHp2()+"-"+memberVO.getHp3();
+		String orderer_email = memberVO.getEmail1()+"@"+memberVO.getEmail2();
 		List<OrderVO> myOrderList=(List<OrderVO>)session.getAttribute("myOrderList");
 		
 		for(int i=0; i<myOrderList.size();i++){
@@ -141,12 +142,13 @@ public class OrderControllerImpl extends BaseController implements OrderControll
 			orderVO.setCard_com_name(receiverMap.get("card_com_name"));
 			orderVO.setCard_pay_month(receiverMap.get("card_pay_month"));
 			orderVO.setPay_orderer_hp_num(receiverMap.get("pay_orderer_hp_num"));	
-			orderVO.setOrderer_hp(orderer_hp);	
-			myOrderList.set(i, orderVO); //°¢ orderVO¿¡ ÁÖ¹®ÀÚ Á¤º¸¸¦ ¼¼ÆÃÇÑ ÈÄ ´Ù½Ã myOrderList¿¡ ÀúÀåÇÑ´Ù.
+			orderVO.setOrderer_hp(orderer_hp);
+			orderVO.setOrderer_email(orderer_email);
+			myOrderList.set(i, orderVO); //ï¿½ï¿½ orderVOï¿½ï¿½ ï¿½Ö¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ù½ï¿½ myOrderListï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
 		}//end for
 		
 	    orderService.addNewOrder(myOrderList);
-		mav.addObject("myOrderInfo",receiverMap);//OrderVO·Î ÁÖ¹®°á°ú ÆäÀÌÁö¿¡  ÁÖ¹®ÀÚ Á¤º¸¸¦ Ç¥½ÃÇÑ´Ù.
+		mav.addObject("myOrderInfo",receiverMap);//OrderVOï¿½ï¿½ ï¿½Ö¹ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  ï¿½Ö¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½ï¿½Ñ´ï¿½.
 		mav.addObject("myOrderList", myOrderList);
 		return mav;
 	}

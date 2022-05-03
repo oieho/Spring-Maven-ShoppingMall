@@ -15,7 +15,7 @@ function search_order_history(fixedSearchPeriod){
 	i_fixedSearch_period.value=fixedSearchPeriod;
     formObj.appendChild(i_fixedSearch_period);
     document.body.appendChild(formObj); 
-    formObj.method="get";
+    formObj.method="post";
     formObj.action="${contextPath}/mypage/listMyOrderHistory.do";
     formObj.submit();
 }

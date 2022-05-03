@@ -72,6 +72,7 @@
      var selTel1 = document.getElementById('tel1');
      var selHp1 = document.getElementById('hp1');
      var optionTel1 = selTel1.options;
+
      var optionHp1 = selHp1.options;
      var val;
      for(var i=0; i<optionTel1.length;i++){

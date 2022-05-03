@@ -12,8 +12,9 @@
 function search_goods_list(fixeSearchPeriod){
 	var formObj=document.createElement("form");
 	var i_fixedSearch_period = document.createElement("input");
-	i_fixedSearch_period.name="fixedSearchPeriod";
-	i_fixedSearch_period.value=searchPeriod;
+	i_fixedSearch_period.name="fixedSearchPeriod2";
+	i_fixedSearch_period.value=fixeSearchPeriod;
+
     formObj.appendChild(i_fixedSearch_period);
     document.body.appendChild(formObj); 
     formObj.method="get";
@@ -22,7 +23,7 @@ function search_goods_list(fixeSearchPeriod){
 }
 
 
-function  calcPeriod(search_period){
+function calcPeriod(search_period){
 	var dt = new Date();
 	var beginYear,endYear;
 	var beginMonth,endMonth;
@@ -252,7 +253,7 @@ function  calcPeriod(search_period){
 		         </c:if>
 		          <a href="${contextPath}/admin/goods/adminGoodsMain.do?chapter=${section}&pageNum=${page}">${(section-1)*10 +page } </a>
 		         <c:if test="${page ==10 }">
-		          <a href="${contextPath}/admin/goods/adminGooodsMain.do?chapter=${section+1}&pageNum=${section*10+1}">&nbsp; next</a>
+		          <a href="${contextPath}/admin/goods/adminGoodsMain.do?chapter=${section+1}&pageNum=${section*10+1}">&nbsp; next</a>
 		         </c:if> 
 	      		</c:forEach> 
      

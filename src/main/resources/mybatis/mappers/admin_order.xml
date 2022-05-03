@@ -72,16 +72,19 @@
 		  select * from (
 			    select rowNum as recNum,t.*
 			       from (
-			              select  *  from t_shopping_order 
-			              where to_char(pay_order_time,'yyyy-mm-dd')  between #{beginDate} and #{endDate}
+			              select * from t_shopping_order
+			              where to_char(pay_order_time,'YYYY-MM-DD') between #{beginDate} and #{endDate}
 			                <if test="search_type=='orderer_id'">
-			                  AND orderer_id=#{search_word}
+			                  AND member_id=#{search_word}
 			                </if>
 			                <if test="search_type=='orderer_name'">
 			                  AND orderer_name=#{search_word}
 			                </if>
-			                <if test="search_type=='orderer_hp_num'">
+			                <if test="search_type=='orderer_shp'">
 			                   AND pay_orderer_hp_num=#{search_word} 
+			                </if>
+			                <if test="search_type=='orderer_goods'">
+			                   AND goods_title=#{search_word} 
 			                </if>
 			              order by pay_order_time desc
 					    ) t

@@ -15,14 +15,14 @@
 <script type="text/javascript">
 function calcGoodsPrice(bookPrice,obj){
 	var totalPrice,final_total_price,totalNum;
-	var goods_qty=document.getElementById("select_goods_qty");
+	var goods_qty=document.getElementById("cart_goods_qty");
 	//alert("총 상품금액"+goods_qty.value);
-	var p_totalNum=document.getElementById("p_totalNum");
-	var p_totalPrice=document.getElementById("p_totalPrice");
+	var p_totalNum=document.getElementById("p_totalGoodsNum");
+	var p_totalPrice=document.getElementById("p_totalGoodsPrice");
 	var p_final_totalPrice=document.getElementById("p_final_totalPrice");
-	var h_totalNum=document.getElementById("h_totalNum");
-	var h_totalPrice=document.getElementById("h_totalPrice");
-	var h_totalDelivery=document.getElementById("h_totalDelivery");
+	var h_totalNum=document.getElementById("h_totalGoodsNum");
+	var h_totalPrice=document.getElementById("h_totalGoodsPrice");
+	var h_totalDelivery=document.getElementById("h_totalDeliveryPrice");
 	var h_final_total_price=document.getElementById("h_final_totalPrice");
 	if(obj.checked==true){
 	//	alert("체크 했음")
@@ -49,8 +49,8 @@ function calcGoodsPrice(bookPrice,obj){
 	h_totalPrice.value=totalPrice;
 	h_final_total_price.value=final_total_price;
 	
-	p_totalNum.innerHTML=totalNum;
-	p_totalPrice.innerHTML=totalPrice;
+	p_totalGoodsNum.innerHTML=totalNum;
+	p_totalGoodsPrice.innerHTML=totalPrice;
 	p_final_totalPrice.innerHTML=final_total_price;
 }
 
@@ -156,30 +156,31 @@ function fn_order_all_cart_goods(){
 	var length=checked_goods.length;
 	
 	
-	//alert(length);
+// 	alert(length);
 	if(length>1){
 		for(var i=0; i<length;i++){
 			if(checked_goods[i].checked==true){
 				order_goods_id=checked_goods[i].value;
 				order_goods_qty=cart_goods_qty[i].value;
-				cart_goods_qty[i].value="";
 				cart_goods_qty[i].value=order_goods_id+":"+order_goods_qty;
-				//alert(select_goods_qty[i].value);
-				console.log(cart_goods_qty[i].value);
 			}
 		}	
 	}else{
 		order_goods_id=checked_goods.value;
 		order_goods_qty=cart_goods_qty.value;
 		cart_goods_qty.value=order_goods_id+":"+order_goods_qty;
-		//alert(select_goods_qty.value);
 	}
 		
  	objForm.method="post";
  	objForm.action="${contextPath}/order/orderAllCartGoods.do";
 	objForm.submit();
 }
-
+function btn_order_later(goods_title){
+    document.getElementById(goods_title).checked = false;
+}
+function btn_add_list(goods_title){
+    document.getElementById(goods_title).checked = true;
+}
 </script>
 </head>
 <body>
@@ -209,7 +210,9 @@ function fn_order_all_cart_goods(){
 				      <c:forEach var="item" items="${myGoodsList }" varStatus="cnt">
 				       <c:set var="cart_goods_qty" value="${myCartList[cnt.count-1].cart_goods_qty}" />
 				       <c:set var="cart_id" value="${myCartList[cnt.count-1].cart_id}" />
-					<td><input type="checkbox" name="checked_goods"  checked  value="${item.goods_id }"  onClick="calcGoodsPrice(${item.goods_sales_price },this)"></td>
+
+					<td><input type="checkbox" id="${item.goods_title }" name="checked_goods"  checked  value="${item.goods_id }"  onClick="calcGoodsPrice(${item.goods_sales_price },this)"></td>
+
 					<td class="goods_image">
 					<a href="${contextPath}/goods/goodsDetail.do?goods_id=${item.goods_id }">
 						<img width="75" alt="" src="${contextPath}/thumbnails.do?goods_id=${item.goods_id}&fileName=${item.goods_fileName}"  />
@@ -223,7 +226,7 @@ function fn_order_all_cart_goods(){
 					<td class="price"><span>${item.goods_price }원</span></td>
 					<td>
 					   <strong>
-					      <fmt:formatNumber  value="${item.goods_sales_price*0.9}" type="number" var="discounted_price" />
+					      <fmt:formatNumber  value="${item.goods_sales_price}" type="number" var="discounted_price" />
 				            ${discounted_price}원(10%할인)
 				         </strong>
 					</td>
@@ -235,18 +238,18 @@ function fn_order_all_cart_goods(){
 					</td>
 					<td>
 					   <strong>
-					    <fmt:formatNumber  value="${item.goods_sales_price*0.9*cart_goods_qty}" type="number" var="total_sales_price" />
+					    <fmt:formatNumber  value="${item.goods_sales_price*cart_goods_qty}" type="number" var="total_sales_price" />
 				         ${total_sales_price}원
 					</strong> </td>
 					<td>
 					      <a href="javascript:fn_order_each_goods('${item.goods_id }','${item.goods_title }','${item.goods_sales_price}','${item.goods_fileName}');">
 					       	<img width="75" alt=""  src="${contextPath}/resources/image/btn_order.jpg">
 							</a><br>
-					 	<a href="#"> 
+					 	<a href="javascript:btn_order_later('${item.goods_title }');"> 
 					 	   <img width="75" alt=""
 							src="${contextPath}/resources/image/btn_order_later.jpg">
 						</a><br> 
-						<a href="#"> 
+						<a href="javascript:btn_add_list('${item.goods_title }');"> 
 						   <img width="75" alt=""
 							src="${contextPath}/resources/image/btn_add_list.jpg">
 						</A><br> 
@@ -256,7 +259,7 @@ function fn_order_all_cart_goods(){
 					   </a>
 					</td>
 			</tr>
-				<c:set  var="totalGoodsPrice" value="${totalGoodsPrice+item.goods_sales_price*0.9*cart_goods_qty }" />
+				<c:set  var="totalGoodsPrice" value="${totalGoodsPrice+item.goods_sales_price*cart_goods_qty }" />
 				<c:set  var="totalGoodsNum" value="${totalGoodsNum+1 }" />
 			   </c:forEach>
 		    

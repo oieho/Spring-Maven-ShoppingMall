@@ -49,7 +49,7 @@
           where g.goods_id=d.goods_id
           and d.filetype='main_image'
            and g.goods_id in
-      ]]>
+      ]]> <!--  t_shopping_carts = item -->
 		<foreach item="item" collection="list" open="(" separator="," close=")">
 			#{item.goods_id}
 		</foreach>

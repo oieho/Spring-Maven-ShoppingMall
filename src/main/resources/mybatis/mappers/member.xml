@@ -53,7 +53,7 @@
   <insert id="insertNewMember"  parameterType="memberVO">
   <![CDATA[
     	insert into t_shopping_member(member_id,
-				 					                  member_pw,
+    								 member_pw,
                                      member_name,
                                      member_gender,
                                      member_birth_y,

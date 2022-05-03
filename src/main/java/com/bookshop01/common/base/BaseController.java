@@ -41,12 +41,12 @@ public abstract class BaseController  {
 			
 			File file = new File(CURR_IMAGE_REPO_PATH +"\\"+ fileName);
 			if(mFile.getSize()!=0){ //File Null Check
-				if(! file.exists()){ //°æ·Î»ó¿¡ ÆÄÀÏÀÌ Á¸ÀçÇÏÁö ¾ÊÀ» °æ¿ì
-					if(file.getParentFile().mkdirs()){ //°æ·Î¿¡ ÇØ´çÇÏ´Â µð·ºÅä¸®µéÀ» »ý¼º
-							file.createNewFile(); //ÀÌÈÄ ÆÄÀÏ »ý¼º
+				if(! file.exists()){ //ï¿½ï¿½Î»ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+					if(file.getParentFile().mkdirs()){ //ï¿½ï¿½Î¿ï¿½ ï¿½Ø´ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+							file.createNewFile(); //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 					}
 				}
-				mFile.transferTo(new File(CURR_IMAGE_REPO_PATH +"\\"+"temp"+ "\\"+originalFileName)); //ÀÓ½Ã·Î ÀúÀåµÈ multipartFileÀ» ½ÇÁ¦ ÆÄÀÏ·Î Àü¼Û
+				mFile.transferTo(new File(CURR_IMAGE_REPO_PATH +"\\"+"temp"+ "\\"+originalFileName)); //ï¿½Ó½Ã·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ multipartFileï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï·ï¿½ ï¿½ï¿½ï¿½ï¿½
 			}
 		}
 		return fileList;
@@ -89,6 +89,8 @@ public abstract class BaseController  {
 		
 		if(fixedSearchPeriod == null) {
 			cal.add(cal.MONTH,-4);
+		}else if(fixedSearchPeriod.equals("today")) {
+			cal.add(Calendar.DAY_OF_YEAR, 0);
 		}else if(fixedSearchPeriod.equals("one_week")) {
 			cal.add(Calendar.DAY_OF_YEAR, -7);
 		}else if(fixedSearchPeriod.equals("two_week")) {
@@ -103,7 +105,7 @@ public abstract class BaseController  {
 			cal.add(cal.MONTH,-4);
 		}
 		
-		beginYear   = Integer.toString(cal.get(Calendar.YEAR));
+		beginYear   = Integer.toString(cal.get(Calendar.YEAR)+1);
 		beginMonth  = df.format(cal.get(Calendar.MONTH) + 1);
 		beginDay   = df.format(cal.get(Calendar.DATE));
 		beginDate = beginYear +"-"+ beginMonth +"-"+beginDay;

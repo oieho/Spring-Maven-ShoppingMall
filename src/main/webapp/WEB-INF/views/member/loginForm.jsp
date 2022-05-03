@@ -28,16 +28,16 @@ function result(){
 			<TBODY>
 				<TR class="dot_line">
 					<TD class="fixed_join">아이디</TD>
-					<TD><input name="member_id" type="text" size="20" /></TD>
+					<TD><input tabindex=1 name="member_id" type="text" size="20" /></TD>
 				</TR>
 				<TR class="solid_line">
 					<TD class="fixed_join">비밀번호</TD>
-					<TD><input name="member_pw" type="password" size="20" /></TD>
+					<TD><input tabindex=2 name="member_pw" type="password" size="20" /></TD>
 				</TR>
 			</TBODY>
 		</TABLE>
 		<br><br>
-		<INPUT	type="submit" value="로그인"> 
+		<INPUT	tabindex=3 type="submit" value="로그인"> 
 		<INPUT type="button" value="초기화">
 		
 		<Br><br>

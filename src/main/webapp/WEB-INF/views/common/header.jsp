@@ -88,7 +88,7 @@
 			 </c:otherwise>
 			</c:choose>
 			   <li><a href="#">고객센터</a></li>
-      <c:if test="${isLogOn==true and memberInfo.member_id =='admin' }">  
+      <c:if test="${isLogOn==true and memberInfo.member_id =='a' }">  
 	   	   <li class="no_line"><a href="${contextPath}/admin/goods/adminGoodsMain.do">관리자</a></li>
 	    </c:if>
 			  

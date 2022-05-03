@@ -9,6 +9,10 @@
        <put-attribute name="title" value="회원 관리 페이지" />
        <put-attribute name="body" value="/WEB-INF/views/admin/member/adminMemberMain.jsp" />
     </definition>
+    <definition name="/admin/member/adminMemberMainSelectedItem" extends="baseLayout">
+       <put-attribute name="title" value="회원 관리 페이지" />
+       <put-attribute name="body" value="/WEB-INF/views/admin/member/adminMemberMain.jsp" />
+    </definition>
     
     <definition name="/admin/member/memberDetail" extends="baseLayout">
        <put-attribute name="title" value="회원 상세 페이지" />

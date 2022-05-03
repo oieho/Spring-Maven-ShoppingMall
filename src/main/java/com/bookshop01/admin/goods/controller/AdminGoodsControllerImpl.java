@@ -43,9 +43,9 @@ public class AdminGoodsControllerImpl extends BaseController  implements AdminGo
 		ModelAndView mav = new ModelAndView(viewName);
 		HttpSession session=request.getSession();
 		session=request.getSession();
-		session.setAttribute("side_menu", "admin_mode"); //¸¶ÀÌÆäÀÌÁö »çÀÌµå ¸Þ´º·Î ¼³Á¤ÇÑ´Ù.
+		session.setAttribute("side_menu", "admin_mode"); //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ ï¿½Þ´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
 		
-		String fixedSearchPeriod = dateMap.get("fixedSearchPeriod");
+		String fixedSearchPeriod = dateMap.get("fixedSearchPeriod2");
 		String section = dateMap.get("section");
 		String pageNum = dateMap.get("pageNum");
 		String beginDate=null,endDate=null;
@@ -53,8 +53,8 @@ public class AdminGoodsControllerImpl extends BaseController  implements AdminGo
 		String [] tempDate=calcSearchPeriod(fixedSearchPeriod).split(",");
 		beginDate=tempDate[0];
 		endDate=tempDate[1];
-		dateMap.put("beginDate", beginDate);
-		dateMap.put("endDate", endDate);
+//		dateMap.put("beginDate", beginDate);
+//		dateMap.put("endDate", endDate);
 		
 		Map<String,Object> condMap=new HashMap<String,Object>();
 		if(section== null) {
@@ -70,14 +70,14 @@ public class AdminGoodsControllerImpl extends BaseController  implements AdminGo
 		List<GoodsVO> newGoodsList=adminGoodsService.listNewGoods(condMap);
 		mav.addObject("newGoodsList", newGoodsList);
 		
-		String beginDate1[]=beginDate.split("-");
-		String endDate2[]=endDate.split("-");
-		mav.addObject("beginYear",beginDate1[0]);
-		mav.addObject("beginMonth",beginDate1[1]);
-		mav.addObject("beginDay",beginDate1[2]);
-		mav.addObject("endYear",endDate2[0]);
-		mav.addObject("endMonth",endDate2[1]);
-		mav.addObject("endDay",endDate2[2]);
+//		String beginDate1[]=beginDate.split("-");
+//		String endDate2[]=endDate.split("-");
+//		mav.addObject("beginYear",beginDate1[0]);
+//		mav.addObject("beginMonth",beginDate1[1]);
+//		mav.addObject("beginDay",beginDate1[2]);
+//		mav.addObject("endYear",endDate2[0]);
+//		mav.addObject("endMonth",endDate2[1]);
+//		mav.addObject("endDay",endDate2[2]);
 		
 		mav.addObject("section", section);
 		mav.addObject("pageNum", pageNum);
@@ -129,7 +129,7 @@ public class AdminGoodsControllerImpl extends BaseController  implements AdminGo
 				}
 			}
 			message= "<script>";
-			message += " alert('»õ»óÇ°À» Ãß°¡Çß½À´Ï´Ù.');";
+			message += " alert('ì—…ë¡œë“œ ì„±ê³µ');";
 			message +=" location.href='"+multipartRequest.getContextPath()+"/admin/goods/addNewGoodsForm.do';";
 			message +=("</script>");
 		}catch(Exception e) {
@@ -142,7 +142,7 @@ public class AdminGoodsControllerImpl extends BaseController  implements AdminGo
 			}
 			
 			message= "<script>";
-			message += " alert('¿À·ù°¡ ¹ß»ýÇß½À´Ï´Ù. ´Ù½Ã ½ÃµµÇØ ÁÖ¼¼¿ä');";
+			message += " alert('ì—…ë¡œë“œ ì‹¤íŒ¨');";
 			message +=" location.href='"+multipartRequest.getContextPath()+"/admin/goods/addNewGoodsForm.do';";
 			message +=("</script>");
 			e.printStackTrace();
