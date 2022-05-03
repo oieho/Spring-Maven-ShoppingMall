@@ -44,19 +44,19 @@ public class AdminMemberControllerImpl extends BaseController  implements AdminM
 		String now = format1.format(time.getTime());
 		HashMap<String,Object> condMap=new HashMap<String,Object>();
 		condMap.put("beginDate",before);
-		String chapter, pageNum = null;
+		String section, pageNum = null;
 		condMap.put("endDate",now);
-		chapter = request.getParameter("chapter");
+		section = request.getParameter("section");
 		pageNum = request.getParameter("pageNum");
-		if(chapter== null) {
-			chapter = "1";
+		if(section== null) {
+			section = "1";
 		}
 		
 		if(pageNum== null) {
 			pageNum = "1";
 		}
 		
-		condMap.put("chapter", chapter);
+		condMap.put("section", section);
 		condMap.put("pageNum", pageNum);
 //		System.out.println(before+" / "+now);
 		ArrayList<MemberVO> member_list=adminMemberService.listMember(condMap);
@@ -71,7 +71,7 @@ public class AdminMemberControllerImpl extends BaseController  implements AdminM
 
 		try { ObjectMapper mapper = new ObjectMapper();
 				String json = mapper.writeValueAsString(dateMap);
-				String chapter = dateMap.get("chapter");
+				String section = dateMap.get("section");
 				String pageNum = dateMap.get("pageNum");
 				String[] getDatum = json.split(",");
 				String[] begin = getDatum[0].split(":");
@@ -83,11 +83,11 @@ public class AdminMemberControllerImpl extends BaseController  implements AdminM
 				condMap.put("beginDate",beginDate);
 				condMap.put("endDate",endDate);
 
-				if(chapter== null) {
-					chapter = "1";
+				if(section== null) {
+					section = "1";
 				}
 
-				condMap.put("chapter",chapter);
+				condMap.put("section",section);
 				if(pageNum== null) {
 					pageNum = "1";
 				}
@@ -102,7 +102,7 @@ public class AdminMemberControllerImpl extends BaseController  implements AdminM
 				HashMap<String, Object> condMap1=new HashMap<String, Object>();
 				condMap1.put("member_list",member_list);
 				condMap1.put("pageNum",pageNum);
-				condMap1.put("chapter",chapter);
+				condMap1.put("section",section);
 				condMap1.put("search_type", search_type);
 				condMap1.put("search_word", search_word);
 				resEntity = new ResponseEntity<Object>(condMap1,HttpStatus.OK);
